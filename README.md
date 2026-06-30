@@ -1,9 +1,18 @@
 # dual-agent-review
 
+**English** · [Português](README.pt-BR.md)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-A78BFA.svg)](LICENSE)
+[![Made with Claude Code](https://img.shields.io/badge/Made%20with-Claude%20Code-2DD4BF.svg)](https://claude.com/claude-code)
+[![Works with Gemini CLI](https://img.shields.io/badge/Works%20with-Gemini%20CLI-22D3EE.svg)](https://github.com/google-gemini/gemini-cli)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-3FB950.svg)](#)
+
 **A cross-review protocol for two terminal coding agents.** One agent executes, the other audits
 its quality, and **a human makes the final call.** Built for [Claude Code](https://claude.com/claude-code)
 (Anthropic) and the [Gemini CLI](https://github.com/google-gemini/gemini-cli) (Google) working side
 by side on the same repo — but the protocol is agent-agnostic.
+
+![The cross-review cycle](assets/cross-review-flow.gif)
 
 > One executes, the other audits through a shared `.cross-review/` folder, roles are decided
 > per-task by the human, **and the final decision is always the human's.**
