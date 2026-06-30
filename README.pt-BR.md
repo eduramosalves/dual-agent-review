@@ -133,6 +133,13 @@ checksum mas são inválidos). O revisor pegou como **Blocker** — *e* ainda ap
 genuíno que ninguém tinha plantado (limpeza permissiva de não-numéricos). É esse o ponto do
 protocolo: o segundo agente enxerga o que o ponto cego do primeiro esconde.
 
+[`examples/payments-aggregation/`](examples/payments-aggregation) é um ciclo **mais difícil**, que
+exercita o protocolo inteiro incluindo uma rodada de rebuttal: um módulo de agregação de pagamentos
+que passava em `ruff` + testes escondendo **6 bugs** (float pra dinheiro, default mutável vazando
+estado, sinal de refund, soma de moedas misturadas, off-by-one na janela, divisão por lista vazia). O
+revisor pegou **todos os 6 + o gap de cobertura dos testes, sem falso positivo**, e no re-review
+confirmou as correções e roteou a única decisão de API pro humano.
+
 ---
 
 ## Como se compara

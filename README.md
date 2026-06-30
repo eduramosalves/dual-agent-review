@@ -132,6 +132,13 @@ pass the checksum but are invalid). The reviewer caught it as a **Blocker** — 
 genuine bug nobody planted (permissive non-numeric stripping). That's the point of the protocol: the
 second agent sees what the first one's blind spot hides.
 
+[`examples/payments-aggregation/`](examples/payments-aggregation) is a **harder** cycle that exercises
+the full protocol including a rebuttal round: a payments-aggregation module that passed `ruff` + tests
+while hiding **6 bugs** (float money, mutable-default state leak, refund sign, mixed-currency
+summation, off-by-one window, empty-list division). The reviewer caught **all 6 plus the shallow-test
+gap, with no false positives**, then on re-review confirmed the fixes and routed the one API decision
+to the human.
+
 ---
 
 ## How it compares
