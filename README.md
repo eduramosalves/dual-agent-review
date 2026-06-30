@@ -134,6 +134,36 @@ second agent sees what the first one's blind spot hides.
 
 ---
 
+## How it compares
+
+The differential here is **design and ergonomics**, not a new AI technique. In one line:
+
+> **Two models from rival vendors auditing each other, with no API bridge — just a folder and the
+> human as decider.** Most similar projects miss at least one of those three.
+
+| Category | Examples | What they do | What's different here |
+|---|---|---|---|
+| Multi-agent orchestration | LangGraph, CrewAI, AutoGen | Agents in the **same process**, handoff via code/API | Two **independent CLIs** that share no process or API; transport is the filesystem + the human. It works *because* they don't talk directly. |
+| LLM-as-judge / self-reflection | Reflexion, self-critique | **The same model** critiques its own output | The reviewer is a **different vendor** (Anthropic ⇄ Google) — genuinely different blind spots, not a model grading itself. |
+| AI code-review bots | CodeRabbit, Greptile, Copilot review | Review a **PR on GitHub**, after the fact, in CI | **Local, real-time, pre-commit**, between two interactive agents, human deciding per task. |
+| Agent-to-agent protocols | A2A, MCP, AutoGen chats | Agents call each other via **API/protocol** | **Zero-integration**: gitignored markdown. Survives restarts, the audit trail is plain files, adoption cost is copying two files. |
+
+**The three pillars that, together, nothing else combines:**
+
+1. **Cross-vendor, not self-review** — model diversity *is* the feature. The CPF example proves it:
+   the reviewer caught the planted bug *and* one nobody planted.
+2. **Transport-agnostic, no orchestration** — not a new app or runtime; it lives in the agents' own
+   instruction layer (`CLAUDE.md` / `GEMINI.md`).
+3. **Human as circuit breaker, by design** — not two AIs auto-merging; the human sets roles per task
+   and gives the final verdict. The safety property *is* the human in the loop.
+
+**Being fair — where it's _not_ special:** this is a well-designed workflow convention, not AI
+research. It's technically simple ("it's just a folder of markdown" is a fair critique — the
+simplicity is the point), and it's **manual**: the human shuttles the turn, so fully auto-orchestrated
+frameworks are more hands-off. That trade-off is deliberate.
+
+---
+
 ## Why it works (and its limits)
 
 - **No orchestration needed.** The shared folder + a human passing the turn is the entire transport.

@@ -135,6 +135,36 @@ protocolo: o segundo agente enxerga o que o ponto cego do primeiro esconde.
 
 ---
 
+## Como se compara
+
+O diferencial aqui é de **design e ergonomia**, não uma técnica nova de IA. Em uma frase:
+
+> **Dois modelos de fabricantes rivais auditando um ao outro, sem nenhuma ponte de API — só uma pasta
+> e o humano como decisor.** A maioria dos projetos parecidos falha em pelo menos um desses três.
+
+| Categoria | Exemplos | O que fazem | O diferencial aqui |
+|---|---|---|---|
+| Orquestração multi-agente | LangGraph, CrewAI, AutoGen | Agentes no **mesmo processo**, handoff via código/API | Duas **CLIs independentes** que não compartilham processo nem API; o transporte é o filesystem + o humano. Funciona *porque* não se falam direto. |
+| LLM-as-judge / self-reflection | Reflexion, self-critique | **O mesmo modelo** critica a própria saída | O revisor é de **outro fabricante** (Anthropic ⇄ Google) — pontos cegos genuinamente diferentes, não o modelo se autoavaliando. |
+| Bots de code review | CodeRabbit, Greptile, Copilot review | Revisam **PR no GitHub**, depois do fato, em CI | **Local, em tempo real, pré-commit**, entre dois agentes interativos, com o humano decidindo por tarefa. |
+| Protocolos agente-a-agente | A2A, MCP, AutoGen chats | Agentes se chamam via **API/protocolo** | **Zero-integração**: markdown gitignored. Sobrevive a restart, a trilha de auditoria são arquivos puros, adoção = copiar dois arquivos. |
+
+**Os três pilares que, juntos, nada mais combina:**
+
+1. **Cross-vendor, não auto-revisão** — diversidade de modelo *é* a feature. O exemplo do CPF prova:
+   o revisor pegou o bug plantado *e* um que ninguém plantou.
+2. **Transporte agnóstico, sem orquestração** — não é um app/runtime novo; vive na própria camada de
+   instrução dos agentes (`CLAUDE.md` / `GEMINI.md`).
+3. **Humano como disjuntor, por design** — não são duas IAs fazendo auto-merge; o humano define os
+   papéis por tarefa e dá o veredito final. A propriedade de segurança *é* o humano no loop.
+
+**Sendo justo — onde _não_ é diferenciado:** isto é uma convenção de workflow bem desenhada, não
+pesquisa de IA. É tecnicamente simples ("é só uma pasta de markdown" é uma crítica válida — a
+simplicidade é o ponto), e é **manual**: o humano leva a vez, então frameworks 100% auto-orquestrados
+são mais hands-off. É um trade-off proposital.
+
+---
+
 ## Por que funciona (e seus limites)
 
 - **Sem orquestração.** A pasta compartilhada + o humano passando a vez são todo o transporte. Sobrevive a
