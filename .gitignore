@@ -1,0 +1,6 @@
+# cross-agent review handoff — local scratch (the protocol's own folder)
+/.cross-review/
+
+# Python
+__pycache__/
+*.pyc
