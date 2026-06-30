@@ -4,3 +4,6 @@
 # Python
 __pycache__/
 *.pyc
+
+# MP4 render is generated on demand for social posts, not shipped (GIF is the repo asset)
+/assets/cross-review-flow.mp4
