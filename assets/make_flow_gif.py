@@ -72,8 +72,11 @@ def pill(d, x, y, text, color):
     return x + w + 22
 
 
+TOP_COL = PAD + 96
+
+
 def actor_col(d, x, label, color, lines, active):
-    top = PAD + 78
+    top = TOP_COL
     bw = (W - 2 * PAD - 60) // 2
     box = (x, top, x + bw, H - PAD - 96)
     _rrect(d, box, 10, outline=(color if active else PANEL_EDGE), width=(3 if active else 1))
@@ -98,11 +101,42 @@ def folder(d, status, files, status_color):
 def frame(human, a_lines, a_active, b_lines, b_active, status, status_color, files):
     img = base()
     d = ImageDraw.Draw(img)
-    d.text((PAD + 22, PAD + 62), human, font=F, fill=INK)
+    d.text((PAD + 22, PAD + 60), human, font=F, fill=INK)
     lx = PAD + 22
     rx = PAD + 22 + (W - 2 * PAD - 60) // 2 + 36
     actor_col(d, lx, "Agent A  (Claude Code)", TEAL, a_lines, a_active)
     actor_col(d, rx, "Agent B  (Gemini CLI / Agy)", VIOLET, b_lines, b_active)
+    folder(d, status, files, status_color)
+    return img
+
+
+def _ctext(d, cy, text, font, fill):
+    tw = d.textlength(text, font=font)
+    d.text(((W - tw) / 2, cy), text, font=font, fill=fill)
+
+
+def final_frame(human, status, status_color, files):
+    """Dedicated single-panel layout for the closing frame (no two columns)."""
+    img = base()
+    d = ImageDraw.Draw(img)
+    d.text((PAD + 22, PAD + 60), human, font=F, fill=INK)
+
+    panel = (PAD + 22, TOP_COL, W - PAD - 22, H - PAD - 96)
+    _rrect(d, panel, 12, outline=GREEN, width=3)
+    mid = (TOP_COL + panel[3]) / 2
+
+    # "ACCEPTED" centered, with a hand-drawn check to its left (Consolas lacks U+2713)
+    label = "ACCEPTED"
+    tw = d.textlength(label, font=F_TITLE)
+    tx = (W - tw) / 2
+    d.text((tx, mid - 92), label, font=F_TITLE, fill=GREEN)
+    cx, cy = tx - 38, mid - 78
+    d.line((cx, cy, cx + 9, cy + 11), fill=GREEN, width=4)
+    d.line((cx + 9, cy + 11, cx + 26, cy - 12), fill=GREEN, width=4)
+
+    _ctext(d, mid - 50, "findings valid — fixes to apply", F_H, INK)
+    _ctext(d, mid - 6, "one executes  ·  the other audits  ·  the human decides", F, DIM)
+
     folder(d, status, files, status_color)
     return img
 
@@ -141,18 +175,10 @@ def build():
     durations.append(2300)
 
     # 4 - human decides
-    frames.append(frame(
+    frames.append(final_frame(
         "Both views in hand, the HUMAN makes the final call",
-        [("• EXECUTOR", DIM)], False,
-        [("• REVIEWER", DIM)], False,
         "closed", GREEN,
         [("20-review.md", DIM), ("99-decision.md", GREEN)]))
-    d = ImageDraw.Draw(frames[-1])
-    d.text((PAD + 22, PAD + 100), "  ✓ ACCEPTED — findings valid, fixes to apply",
-           font=F_H, fill=GREEN)
-    d.text((PAD + 22, PAD + 132),
-           "  one executes · the other audits · the human decides",
-           font=F, fill=INK)
     durations.append(2600)
 
     out = Path(__file__).with_name("cross-review-flow.gif")
