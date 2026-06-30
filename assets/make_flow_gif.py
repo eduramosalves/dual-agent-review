@@ -141,7 +141,8 @@ def final_frame(human, status, status_color, files):
     return img
 
 
-def build():
+def build_frames():
+    """Return (frames, durations_ms) — shared by the GIF and MP4 renderers."""
     frames, durations = [], []
 
     # 1 - request
@@ -181,6 +182,11 @@ def build():
         [("20-review.md", DIM), ("99-decision.md", GREEN)]))
     durations.append(2600)
 
+    return frames, durations
+
+
+def build():
+    frames, durations = build_frames()
     out = Path(__file__).with_name("cross-review-flow.gif")
     frames[0].save(out, save_all=True, append_images=frames[1:], duration=durations,
                    loop=0, optimize=True, disposal=2)
